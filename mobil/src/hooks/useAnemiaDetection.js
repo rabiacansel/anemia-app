@@ -32,16 +32,35 @@ export default function useAnemiaDetection() {
 
   // 📸 Kamera çek
 const takePhoto = async (type) => {
-  const result = await ImagePicker.launchCameraAsync({
-    allowsEditing: true,
-    quality: 1,
-  });
+  try {
+    console.log("Kamera butonuna basıldı", type);
 
-  if (!result.canceled) {
-    setImageByType(type, result.assets[0].uri);
+    const permission = await ImagePicker.requestCameraPermissionsAsync();
+    console.log("Permission:", permission);
+
+    if (!permission.granted) {
+      Alert.alert("Kamera izni verilmedi.");
+      return;
+    }
+
+    console.log("Kamera açılıyor...");
+
+    const result = await ImagePicker.launchCameraAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      quality: 1,
+    });
+
+    console.log("Result:", result);
+
+    if (!result.canceled) {
+      setImageByType(type, result.assets[0].uri);
+    }
+  } catch (err) {
+    console.log("Camera Error:", err);
+    Alert.alert("Hata", err.message);
   }
 };
-
   // 🗑️ silme
   const removeImage = (type) => {
     if (type === "palm") setPalmImage(null);
