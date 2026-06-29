@@ -1,0 +1,30 @@
+HandlerChain:
+  order:
+    - type: OrigNormalizer
+      parameters:
+        scaling:
+          value: 0.1
+          default: 1.0
+          description: Scaling of the original image (0.0.1.0) can speed up the chain process.
+        width:
+          value: 512
+          default: 350
+          description: Scale to a fixed width, if scaling is set at the same time, the parameter shall prevail.
+    - type: LaplaceEnhancer
+    - type: GaussianFilter
+    - type: OtsuBinarizer
+    - type: NoiseAdjuster
+    - type: AngleAdjuster
+    - type: PeakValleyDetector
+      parameters:
+        step:
+          value: 8
+          default: 5
+          description: Step through the contours of the palm. Too small will lead to the local extreme, can not find the fingertip bottom; Too much leads to inaccurate fingertip troughs. The recommendation is between 5 and 10.
+    - type: EffectiveIncircleExtractor
+    - type: IncircleRoiNormalizer
+      parameters:
+        width:
+          value: 200
+          default: 256
+          description: Uniform ROI size. Set 0 to indicate no scaling.
